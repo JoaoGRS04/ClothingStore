@@ -1,9 +1,17 @@
-import { products } from "./products.js";
+import { products, type Product } from "./products.js";
+import { formatPrice } from "./catalog.js";
 
 const list = document.querySelector<HTMLUListElement>("#product-list");
 
-if (list) {
-  list.innerHTML = products
-    .map((p) => `<li>${p.name} - R$ ${p.price.toFixed(2)}</li>`)
+function renderProducts(items: Product[]): void {
+  if (!list) return;
+
+  list.innerHTML = items
+    .map((p) => {
+      const stock = p.inStock ? "" : " (sem estoque)";
+      return `<li>${p.name} - ${formatPrice(p.price)}${stock}</li>`;
+    })
     .join("");
 }
+
+renderProducts(products);
