@@ -8,6 +8,10 @@ export function filterByCategory(category: Category): Product[] {
   return products.filter((product) => product.category === category);
 }
 
-export function filter_by_price(price: number){
-    return products.filter((product) => product.price <= price);
+export function filterByPrice(price: number, items: Product[]){
+    return items.filter((product) => product.price <= price);
+}
+
+export function formatPrice(price: number){
+  return `R$ ${price.toFixed(2).replace(".", ",")}`;
 }
