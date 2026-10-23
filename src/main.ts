@@ -1,12 +1,18 @@
 import { products, type Product , type Category} from "./products.js";
-import { filterByCategory, formatPrice, findById } from "./catalog.js";
+import { filterByCategory, formatPrice, findById, filterByPrice } from "./catalog.js";
 
 const list = document.querySelector<HTMLUListElement>("#product-list");
 const filter = document.querySelector<HTMLSelectElement>("#category-filter");
 const details = document.querySelector<HTMLElement>("#product-details");
+const priceInput = document.querySelector<HTMLInputElement>("#max-price");
 
 function renderProducts(items: Product[]): void {
   if (!list) return;
+
+  if (items.length === 0) {
+  list.innerHTML = "<li>Nenhum produto encontrado.</li>";
+  return;
+  }
 
   list.innerHTML = items
     .map((p) => {
@@ -15,6 +21,7 @@ function renderProducts(items: Product[]): void {
     })
     .join("");
 }
+
 function renderDetails(product: Product | undefined): void {
   if (!details) return;
 
@@ -32,12 +39,17 @@ function renderDetails(product: Product | undefined): void {
 
 function applyFilters(): void {
   const category = (filter?.value ?? "all") as Category | "all";
-  const items = category === "all" ? products : filterByCategory(category);
+  let items = category === "all" ? products : filterByCategory(category);
+
+   if (priceInput && priceInput.value !== "") {
+    items = filterByPrice(Number(priceInput.value), items);
+  }
 
   renderProducts(items);
 }
 
 filter?.addEventListener("change", applyFilters);
+priceInput?.addEventListener("input", applyFilters);
 
 applyFilters();
 
