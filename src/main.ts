@@ -30,13 +30,16 @@ function renderDetails(product: Product | undefined): void {
   `;
 }
 
-if (filter) {
-  filter.addEventListener("change", () => {
-    const value = filter.value as Category | "all";
-    const items = value === "all" ? products : filterByCategory(value);
-    renderProducts(items);
-  });
+function applyFilters(): void {
+  const category = (filter?.value ?? "all") as Category | "all";
+  const items = category === "all" ? products : filterByCategory(category);
+
+  renderProducts(items);
 }
+
+filter?.addEventListener("change", applyFilters);
+
+applyFilters();
 
 list?.addEventListener("click", (event) => {
   const target = event.target as HTMLElement;
@@ -46,4 +49,3 @@ list?.addEventListener("click", (event) => {
   renderDetails(findById(Number(id)));
 });
 
-renderProducts(products);
