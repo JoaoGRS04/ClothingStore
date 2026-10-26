@@ -1,5 +1,4 @@
 import { findById } from "./catalog.js";
-import { products, type Product } from "./products.js";
 
 export interface CartItem {
     id: number;
@@ -9,7 +8,7 @@ export interface CartItem {
 export type Cart = CartItem[];
 
 export function addToCart(cart: Cart, id: number) {
-    if  (products.find((p) => p.id === id)?.inStock) {
+    if  (findById(id)?.inStock) {
         const itemFound = cart.find((item) => item.id === id) 
         if (itemFound) {
             itemFound.quantity += 1;
@@ -35,7 +34,7 @@ export function removeFromCart(cart: Cart, id: number ) {
 
 export function getCartTotal(cart: Cart) {
     const total = cart.reduce((acc, item) => {
-        const product = products.find((p) => p.id === item.id)
+        const product = findById(item.id)
         if (!product)
             return acc + 0;
         return acc + (product.price * item.quantity)
