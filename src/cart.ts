@@ -32,3 +32,13 @@ export function removeFromCart(cart: Cart, id: number ) {
         }
     }
 }
+
+export function getCartTotal(cart: Cart) {
+    const total = cart.reduce((acc, item) => {
+        const product = products.find((p) => p.id === item.id)
+        if (!product)
+            return acc + 0;
+        return acc + (product.price * item.quantity)
+    }, 0);
+    return total;
+}
