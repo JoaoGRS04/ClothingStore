@@ -9,6 +9,12 @@ export type Cart = CartItem[];
 
 export function addToCart(cart: Cart, id: number) {
     if  (products.find((p) => p.id === id)?.inStock) {
-        cart.push({id: id, quantity: 1})
+        const itemFound = cart.find((item) => item.id === id) 
+        if (itemFound) {
+            itemFound.quantity += 1;
+        }
+        else {
+            cart.push({id: id, quantity: 1})
+        }
     }
 }
