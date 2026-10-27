@@ -1,6 +1,6 @@
 import { products, type Product , type Category} from "./products.js";
 import { filterByCategory, formatPrice, findById, filterByPrice } from "./catalog.js";
-import { addToCart, removeFromCart, getCartTotal, type Cart } from "./cart.js";
+import { addToCart, removeFromCart, getCartTotal, clearCart, type Cart } from "./cart.js";
 
 const list = document.querySelector<HTMLUListElement>("#product-list");
 const filter = document.querySelector<HTMLSelectElement>("#category-filter");
@@ -8,6 +8,7 @@ const details = document.querySelector<HTMLElement>("#product-details");
 const priceInput = document.querySelector<HTMLInputElement>("#max-price");
 const cartList = document.querySelector<HTMLUListElement>("#cart-list");
 const cartTotal = document.querySelector<HTMLElement>("#cart-total");
+const clear = document.querySelector<HTMLButtonElement>("#clear");
 const cart: Cart = []
 
 function renderProducts(items: Product[]): void {
@@ -32,9 +33,14 @@ function renderCart(): void {
   if (cart.length === 0) {
     cartList.innerHTML = "<li>Carrinho vazio.</li>";
     cartTotal.textContent = "";
+    if (clear){
+      clear.hidden = true;
+    }
     return;
   }
-
+  if (clear) {
+    clear.hidden = false;
+  }
   cartList.innerHTML = cart
     .map((item) => {
       const product = findById(item.id);
@@ -104,6 +110,11 @@ cartList?.addEventListener("click", (event) => {
   removeFromCart(cart, Number(target.dataset.id));
   renderCart();
 });
+
+clear?.addEventListener("click", () => {
+  clearCart(cart);
+  renderCart();
+})
 
 applyFilters();
 renderCart();
