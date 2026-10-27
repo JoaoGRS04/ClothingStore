@@ -1,0 +1,19 @@
+.layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.catalog {
+  flex: 1;
+}
+
+.cart {
+  width: 300px;
+}
+
+body {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
