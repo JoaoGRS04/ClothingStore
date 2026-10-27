@@ -6,6 +6,8 @@ const list = document.querySelector<HTMLUListElement>("#product-list");
 const filter = document.querySelector<HTMLSelectElement>("#category-filter");
 const details = document.querySelector<HTMLElement>("#product-details");
 const priceInput = document.querySelector<HTMLInputElement>("#max-price");
+const cartList = document.querySelector<HTMLUListElement>("#cart-list");
+const cartTotal = document.querySelector<HTMLElement>("#cart-total");
 const cart: Cart = []
 
 function renderProducts(items: Product[]): void {
@@ -22,6 +24,27 @@ function renderProducts(items: Product[]): void {
       return `<li><button data-id="${p.id}">${p.name}</button> - ${formatPrice(p.price)}${stock}</li>`;
     })
     .join("");
+}
+
+function renderCart(): void {
+  if (!cartList || !cartTotal) return;
+
+  if (cart.length === 0) {
+    cartList.innerHTML = "<li>Carrinho vazio.</li>";
+    cartTotal.textContent = "";
+    return;
+  }
+
+  cartList.innerHTML = cart
+    .map((item) => {
+      const product = findById(item.id);
+      if (!product) return "";
+
+      return `<li>${product.name} x${item.quantity} - ${formatPrice(product.price * item.quantity)}</li>`;
+    })
+    .join("");
+
+  cartTotal.textContent = `Total: ${formatPrice(getCartTotal(cart))}`;
 }
 
 function renderDetails(product: Product | undefined): void {
@@ -56,7 +79,6 @@ function applyFilters(): void {
 filter?.addEventListener("change", applyFilters);
 priceInput?.addEventListener("input", applyFilters);
 
-applyFilters();
 
 list?.addEventListener("click", (event) => {
   const target = event.target as HTMLElement;
@@ -71,6 +93,9 @@ details?.addEventListener("click", (event) => {
   if (target.dataset.action !== "add") return;
 
   addToCart(cart, Number(target.dataset.id));
-  console.log(cart);
+  renderCart();
 });
+
+applyFilters();
+renderCart();
 
