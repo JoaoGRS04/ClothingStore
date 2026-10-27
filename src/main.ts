@@ -1,10 +1,12 @@
 import { products, type Product , type Category} from "./products.js";
 import { filterByCategory, formatPrice, findById, filterByPrice } from "./catalog.js";
+import { addToCart, removeFromCart, getCartTotal, type Cart } from "./cart.js";
 
 const list = document.querySelector<HTMLUListElement>("#product-list");
 const filter = document.querySelector<HTMLSelectElement>("#category-filter");
 const details = document.querySelector<HTMLElement>("#product-details");
 const priceInput = document.querySelector<HTMLInputElement>("#max-price");
+const cart: Cart = []
 
 function renderProducts(items: Product[]): void {
   if (!list) return;
@@ -34,6 +36,9 @@ function renderDetails(product: Product | undefined): void {
     <h3>${product.name}</h3>
     <p>Preço: ${formatPrice(product.price)}</p>
     <p>${product.inStock ? "Em estoque" : "Sem estoque"}</p>
+    <button data-action="add" data-id="${product.id}" ${product.inStock ? "" : "disabled"}>
+    Adicionar ao carrinho
+    </button>
   `;
 }
 
@@ -59,5 +64,13 @@ list?.addEventListener("click", (event) => {
   if (id === undefined) return;
 
   renderDetails(findById(Number(id)));
+});
+
+details?.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement;
+  if (target.dataset.action !== "add") return;
+
+  addToCart(cart, Number(target.dataset.id));
+  console.log(cart);
 });
 
