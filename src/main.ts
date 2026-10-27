@@ -10,6 +10,7 @@ const cartList = document.querySelector<HTMLUListElement>("#cart-list");
 const cartTotal = document.querySelector<HTMLElement>("#cart-total");
 const clear = document.querySelector<HTMLButtonElement>("#clear");
 const cart: Cart = []
+let productDetailsId: number | undefined;
 
 function renderProducts(items: Product[]): void {
   if (!list) return;
@@ -70,6 +71,7 @@ function renderDetails(product: Product | undefined): void {
     Adicionar ao carrinho
     </button>
   `;
+  productDetailsId = product.id;
 }
 
 function applyFilters(): void {
@@ -80,6 +82,12 @@ function applyFilters(): void {
     items = filterByPrice(Number(priceInput.value), items);
   }
 
+  if (items.some((p) => p.id !== productDetailsId) && productDetailsId) {
+    if (details) {
+      details.innerHTML = "";
+      productDetailsId = undefined;
+    }
+  }
   renderProducts(items);
 }
 
