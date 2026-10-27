@@ -1,19 +1,44 @@
+.title {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
 .layout {
   display: flex;
-  gap: 2rem;
+  gap: 10px;
   align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
 }
 
 .catalog {
-  flex: 1;
+  flex: 2;
+  padding: 24px;
 }
 
 .cart {
-  width: 300px;
+  flex: 1;
+  padding: 24px;
 }
 
-body {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
+button {
+  background-color: #212529;
+  color: #F8F9FA;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input, select {
+  font-family: inherit;
+  font-size: inherit;
 }
