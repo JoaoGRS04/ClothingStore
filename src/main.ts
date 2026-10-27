@@ -40,7 +40,8 @@ function renderCart(): void {
       const product = findById(item.id);
       if (!product) return "";
 
-      return `<li>${product.name} x${item.quantity} - ${formatPrice(product.price * item.quantity)}</li>`;
+      return `<li>${product.name} x${item.quantity} - ${formatPrice(product.price * item.quantity)}
+        <button data-action="remove" data-id="${item.id}">Remover</button></li>`;
     })
     .join("");
 
@@ -93,6 +94,14 @@ details?.addEventListener("click", (event) => {
   if (target.dataset.action !== "add") return;
 
   addToCart(cart, Number(target.dataset.id));
+  renderCart();
+});
+
+cartList?.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement;
+  if (target.dataset.action !== "remove") return;
+
+  removeFromCart(cart, Number(target.dataset.id));
   renderCart();
 });
 
