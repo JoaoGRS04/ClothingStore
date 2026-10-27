@@ -41,3 +41,7 @@ export function getCartTotal(cart: Cart) {
     }, 0);
     return total;
 }
+
+export function clearCart(cart: Cart) {
+    cart.length = 0;
+}
