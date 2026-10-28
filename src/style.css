@@ -5,22 +5,27 @@
 
 .layout {
   display: flex;
-  gap: 10px;
+  gap: 20px;
   align-items: flex-start;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
 }
 
 .catalog {
-  flex: 2;
-  padding: 24px;
+  flex: 3;
+  padding: 40;
 }
 
 .cart {
-  flex: 1;
-  padding: 24px;
+  flex: 2;
+  padding: 40;
+}
+
+.wallet {
+  flex: 2;
+  padding: 40;
 }
 
 button {

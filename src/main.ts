@@ -1,6 +1,7 @@
 import { products, type Product , type Category} from "./products.js";
 import { filterByCategory, formatPrice, findById, filterByPrice } from "./catalog.js";
 import { addToCart, removeFromCart, getCartTotal, clearCart, type Cart } from "./cart.js";
+import { addBalance, withdrawBalance, resetBalance, type Wallet } from "./wallet.js";
 
 const list = document.querySelector<HTMLUListElement>("#product-list");
 const filter = document.querySelector<HTMLSelectElement>("#category-filter");
@@ -9,7 +10,14 @@ const priceInput = document.querySelector<HTMLInputElement>("#max-price");
 const cartList = document.querySelector<HTMLUListElement>("#cart-list");
 const cartTotal = document.querySelector<HTMLElement>("#cart-total");
 const clear = document.querySelector<HTMLButtonElement>("#clear");
-const cart: Cart = []
+const balanceText = document.querySelector<HTMLElement>("#wallet-balance");
+const balanceInput = document.querySelector<HTMLInputElement>("#balance-input");
+const walletMessage = document.querySelector<HTMLElement>("#wallet-message");
+const addBalanceButton = document.querySelector<HTMLButtonElement>("#add-balance");
+const withdrawBalanceButton = document.querySelector<HTMLButtonElement>("#withdraw-balance");
+const resetBalanceButton = document.querySelector<HTMLButtonElement>("#reset-balance");
+const cart: Cart = [];
+const myWallet: Wallet = {balance: 0};
 let productDetailsId: number | undefined;
 
 function renderProducts(items: Product[]): void {
@@ -75,6 +83,16 @@ function renderDetails(product: Product | undefined): void {
   productDetailsId = product.id;
 }
 
+function renderWallet(): void {
+  if (!balanceText) return;
+  balanceText.textContent = `Saldo: ${formatPrice(myWallet.balance)}`;
+}
+
+function showMessage(text: string): void {
+  if (!walletMessage) return;
+  walletMessage.textContent = text;
+}
+
 function applyFilters(): void {
   const category = (filter?.value ?? "all") as Category | "all";
   let items = category === "all" ? products : filterByCategory(category);
@@ -128,7 +146,26 @@ cartList?.addEventListener("click", (event) => {
 clear?.addEventListener("click", () => {
   clearCart(cart);
   renderCart();
-})
+});
+
+addBalanceButton?.addEventListener("click", () => {
+  const ok = addBalance(myWallet, Number(balanceInput?.value));
+  showMessage(ok ? "" : "Valor digitado inválido.");
+  renderWallet();
+});
+
+withdrawBalanceButton?.addEventListener("click", () => {
+  const ok = withdrawBalance(myWallet, Number(balanceInput?.value));
+  showMessage(ok ? "" : "Valor digitado inválido.");
+  renderWallet();
+});
+
+resetBalanceButton?.addEventListener("click", () => {
+  resetBalance(myWallet);
+  showMessage("");
+  renderWallet();
+});
+
 
 applyFilters();
 renderCart();
