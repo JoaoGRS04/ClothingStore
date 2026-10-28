@@ -4,17 +4,18 @@ export interface Wallet {
 
 export function addBalance(wallet: Wallet, value: number) {
     if (Number.isNaN(value) || value < 0) {
-        return
+        return false;
     }
     wallet.balance += value;
-}
+    return true;
+}   
 
 export function withdrawBalance(wallet: Wallet, value: number) {
     if (Number.isNaN(value) || value <= 0 || value > wallet.balance) {
-        return false
+        return false;
     }
     wallet.balance -= value;
-    return true
+    return true;
 }
 export function resetBalance(wallet: Wallet) {
     wallet.balance = 0;
