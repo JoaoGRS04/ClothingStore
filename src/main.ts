@@ -48,7 +48,8 @@ function renderCart(): void {
       if (!product) return "";
 
       return `<li>${product.name} x${item.quantity} - ${formatPrice(product.price * item.quantity)}
-        <button data-action="remove" data-id="${item.id}">Remover</button></li>`;
+        <button data-action="add" data-id="${item.id}">+</button>
+        <button data-action="remove" data-id="${item.id}">-</button></li>`;
     })
     .join("");
 
@@ -113,9 +114,14 @@ details?.addEventListener("click", (event) => {
 
 cartList?.addEventListener("click", (event) => {
   const target = event.target as HTMLElement;
-  if (target.dataset.action !== "remove") return;
+  if (target.dataset.action !== "remove" && target.dataset.action !== "add") return;
 
-  removeFromCart(cart, Number(target.dataset.id));
+  if (target.dataset.action === "remove") {
+    removeFromCart(cart, Number(target.dataset.id));
+  }
+  if (target.dataset.action === "add"){
+    addToCart(cart, Number(target.dataset.id));
+  }
   renderCart();
 });
 
