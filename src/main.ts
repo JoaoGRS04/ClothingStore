@@ -19,6 +19,10 @@ const withdrawBalanceButton = document.querySelector<HTMLButtonElement>("#withdr
 const resetBalanceButton = document.querySelector<HTMLButtonElement>("#reset-balance");
 const completePurchaseButton = document.querySelector<HTMLButtonElement>("#complete-purchase");
 const orderMessage = document.querySelector<HTMLElement>("#order-message");
+const ordersList = document.querySelector<HTMLUListElement>("#orders-list");
+const ordersPanel = document.querySelector<HTMLElement>("#orders-panel");
+const toggleOrdersButton = document.querySelector<HTMLButtonElement>("#toggle-orders");
+const clearOrdersButton = document.querySelector<HTMLButtonElement>("#clear-orders");
 const cart: Cart = [];
 const myWallet: Wallet = {balance: 0};
 const orders: Orders = [];
@@ -92,6 +96,36 @@ function renderDetails(product: Product | undefined): void {
 function renderWallet(): void {
   if (!balanceText) return;
   balanceText.textContent = `Saldo: ${formatPrice(myWallet.balance)}`;
+}
+
+function renderOrders(): void {
+  if (!ordersList) return;
+
+  if (orders.length === 0) {
+    ordersList.innerHTML = "<li>Histórico vazio.</li>";
+    if (clearOrdersButton) 
+      clearOrdersButton.hidden = true;
+    return;
+  }
+  if (clearOrdersButton) clearOrdersButton.hidden = false;
+  ordersList.innerHTML = orders
+    .map((order, index) => {
+      const items = order
+        .map((item) => {
+          const product = findById(item.id);
+          if (!product) return "";
+
+          return `<li>${product.name} x${item.quantity} - ${formatPrice(product.price * item.quantity)}</li>`;
+        })
+        .join("");
+
+      return `<li class="order">
+        <strong>Pedido ${index + 1} - Total: ${formatPrice(getCartTotal(order))}</strong>
+        <ul>${items}</ul>
+      </li>`;
+    })
+    .reverse()
+    .join("");
 }
 
 function showMessage(text: string): void {
@@ -183,9 +217,25 @@ completePurchaseButton?.addEventListener("click", () => {
   const ok = completePurchase(cart, myWallet, orders);
   showOrderMessage(ok ? "Compra finalizada com sucesso!" : "Saldo insuficiente.");
   renderWallet();
-  renderCart()
-})
+  renderCart();
+  renderOrders();
+});
+
+toggleOrdersButton?.addEventListener("click", () => {
+  if (!ordersPanel || !toggleOrdersButton) return;
+
+  ordersPanel.hidden = !ordersPanel.hidden;
+  toggleOrdersButton.textContent = ordersPanel.hidden
+    ? "Visualizar histórico de pedidos"
+    : "Fechar histórico de pedidos";
+});
+
+clearOrdersButton?.addEventListener("click", () => {
+  clearOrders(orders);
+  renderOrders();
+});
 
 applyFilters();
 renderCart();
+renderOrders();
 
