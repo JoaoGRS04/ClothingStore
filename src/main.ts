@@ -2,6 +2,7 @@ import { products, type Product , type Category} from "./products.js";
 import { filterByCategory, formatPrice, findById, filterByPrice } from "./catalog.js";
 import { addToCart, removeFromCart, getCartTotal, clearCart, type Cart } from "./cart.js";
 import { addBalance, withdrawBalance, resetBalance, type Wallet } from "./wallet.js";
+import { completePurchase, clearOrders, type Orders} from "./order.js";
 
 const list = document.querySelector<HTMLUListElement>("#product-list");
 const filter = document.querySelector<HTMLSelectElement>("#category-filter");
@@ -16,8 +17,11 @@ const walletMessage = document.querySelector<HTMLElement>("#wallet-message");
 const addBalanceButton = document.querySelector<HTMLButtonElement>("#add-balance");
 const withdrawBalanceButton = document.querySelector<HTMLButtonElement>("#withdraw-balance");
 const resetBalanceButton = document.querySelector<HTMLButtonElement>("#reset-balance");
+const completePurchaseButton = document.querySelector<HTMLButtonElement>("#complete-purchase");
+const orderMessage = document.querySelector<HTMLElement>("#order-message");
 const cart: Cart = [];
 const myWallet: Wallet = {balance: 0};
+const orders: Orders = [];
 let productDetailsId: number | undefined;
 
 function renderProducts(items: Product[]): void {
@@ -42,14 +46,16 @@ function renderCart(): void {
   if (cart.length === 0) {
     cartList.innerHTML = "<li>Carrinho vazio.</li>";
     cartTotal.textContent = "";
-    if (clear){
-      clear.hidden = true;
-    }
+    if (clear)
+      clear.hidden = true;   
+    if (completePurchaseButton)
+      completePurchaseButton.hidden = true;
     return;
   }
-  if (clear) {
+  if (clear) 
     clear.hidden = false;
-  }
+  if (completePurchaseButton)
+      completePurchaseButton.hidden = false;
   cartList.innerHTML = cart
     .map((item) => {
       const product = findById(item.id);
@@ -93,6 +99,11 @@ function showMessage(text: string): void {
   walletMessage.textContent = text;
 }
 
+function showOrderMessage(text: string): void {
+  if (!orderMessage) return;
+  orderMessage.textContent = text;
+}
+
 function applyFilters(): void {
   const category = (filter?.value ?? "all") as Category | "all";
   let items = category === "all" ? products : filterByCategory(category);
@@ -126,6 +137,7 @@ details?.addEventListener("click", (event) => {
   const target = event.target as HTMLElement;
   if (target.dataset.action !== "add") return;
 
+  showOrderMessage("");
   addToCart(cart, Number(target.dataset.id));
   renderCart();
 });
@@ -133,7 +145,7 @@ details?.addEventListener("click", (event) => {
 cartList?.addEventListener("click", (event) => {
   const target = event.target as HTMLElement;
   if (target.dataset.action !== "remove" && target.dataset.action !== "add") return;
-
+  showOrderMessage("");
   if (target.dataset.action === "remove") {
     removeFromCart(cart, Number(target.dataset.id));
   }
@@ -144,6 +156,7 @@ cartList?.addEventListener("click", (event) => {
 });
 
 clear?.addEventListener("click", () => {
+  showOrderMessage("");
   clearCart(cart);
   renderCart();
 });
@@ -166,6 +179,12 @@ resetBalanceButton?.addEventListener("click", () => {
   renderWallet();
 });
 
+completePurchaseButton?.addEventListener("click", () => {
+  const ok = completePurchase(cart, myWallet, orders);
+  showOrderMessage(ok ? "Compra finalizada com sucesso!" : "Saldo insuficiente.");
+  renderWallet();
+  renderCart()
+})
 
 applyFilters();
 renderCart();
