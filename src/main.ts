@@ -23,10 +23,15 @@ const ordersList = document.querySelector<HTMLUListElement>("#orders-list");
 const ordersPanel = document.querySelector<HTMLElement>("#orders-panel");
 const toggleOrdersButton = document.querySelector<HTMLButtonElement>("#toggle-orders");
 const clearOrdersButton = document.querySelector<HTMLButtonElement>("#clear-orders");
-const cart: Cart = [];
-const myWallet: Wallet = {balance: 0};
-const orders: Orders = [];
+const saved = JSON.parse(localStorage.getItem("loja") ?? "{}");
+const cart: Cart = saved.cart ?? [];
+const myWallet: Wallet = saved.wallet ?? {balance: 0};
+const orders: Orders = saved.orders ?? [];
 let productDetailsId: number | undefined;
+
+function saveState(): void {
+  localStorage.setItem("loja", JSON.stringify({ cart, wallet: myWallet, orders }));
+}
 
 function renderProducts(items: Product[]): void {
   if (!list) return;
@@ -45,6 +50,7 @@ function renderProducts(items: Product[]): void {
 }
 
 function renderCart(): void {
+  saveState();
   if (!cartList || !cartTotal) return;
 
   if (cart.length === 0) {
@@ -94,11 +100,13 @@ function renderDetails(product: Product | undefined): void {
 }
 
 function renderWallet(): void {
+  saveState();
   if (!balanceText) return;
   balanceText.textContent = `Saldo: ${formatPrice(myWallet.balance)}`;
 }
 
 function renderOrders(): void {
+  saveState();
   if (!ordersList) return;
 
   if (orders.length === 0) {
@@ -238,4 +246,4 @@ clearOrdersButton?.addEventListener("click", () => {
 applyFilters();
 renderCart();
 renderOrders();
-
+renderWallet();
