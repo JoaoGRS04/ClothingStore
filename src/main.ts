@@ -146,7 +146,7 @@ function applyFilters(): void {
     items = filterByPrice(Number(priceInput.value), items);
   }
 
-  if (items.some((p) => p.id !== productDetailsId) && productDetailsId) {
+  if (!items.some((p) => p.id === productDetailsId) && productDetailsId) {
     if (details) {
       details.innerHTML = "";
       productDetailsId = undefined;
