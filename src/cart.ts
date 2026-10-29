@@ -2,19 +2,21 @@ import { findById } from "./catalog.js";
 
 export interface CartItem {
     id: number;
+    price: number;
     quantity: number;
 }
 
 export type Cart = CartItem[];
 
 export function addToCart(cart: Cart, id: number) {
-    if  (findById(id)?.inStock) {
+    const item = findById(id);
+    if  (item?.inStock) {
         const itemFound = cart.find((item) => item.id === id) 
         if (itemFound) {
             itemFound.quantity += 1;
         }
         else {
-            cart.push({id: id, quantity: 1})
+            cart.push({id: id, price: item.price, quantity: 1})
         }
     }
 }
@@ -33,13 +35,7 @@ export function removeFromCart(cart: Cart, id: number ) {
 }
 
 export function getCartTotal(cart: Cart) {
-    const total = cart.reduce((acc, item) => {
-        const product = findById(item.id)
-        if (!product)
-            return acc + 0;
-        return acc + (product.price * item.quantity)
-    }, 0);
-    return total;
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 }
 
 export function clearCart(cart: Cart) {

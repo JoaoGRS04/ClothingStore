@@ -8,7 +8,7 @@ export function completePurchase(cart: Cart, wallet: Wallet, orders: Orders) :bo
     const orderResult = withdrawBalance(wallet, totalPrice);
     if (!orderResult) 
         return false;
-    orders.push([...cart]);
+    orders.push(cart.map((item) => ({ ...item })));
     cart.length = 0;
     return true;
 }

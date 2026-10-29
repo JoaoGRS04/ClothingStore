@@ -65,7 +65,7 @@ function renderCart(): void {
       const product = findById(item.id);
       if (!product) return "";
 
-      return `<li>${product.name} x${item.quantity} - ${formatPrice(product.price * item.quantity)}
+      return `<li>${product.name} x${item.quantity} - ${formatPrice(item.price * item.quantity)}
         <button data-action="add" data-id="${item.id}">+</button>
         <button data-action="remove" data-id="${item.id}">-</button></li>`;
     })
@@ -115,7 +115,7 @@ function renderOrders(): void {
           const product = findById(item.id);
           if (!product) return "";
 
-          return `<li>${product.name} x${item.quantity} - ${formatPrice(product.price * item.quantity)}</li>`;
+          return `<li>${product.name} x${item.quantity} - ${formatPrice(item.price * item.quantity)}</li>`;
         })
         .join("");
 
